@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use App\User;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\UseUse;
 
 use function Psy\debug;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +19,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return response()->json(['data' => $users], 200);
+        return $this->showAll($users);
     }
 
     /**
@@ -41,12 +41,12 @@ class UserController extends Controller
         $data = $request->all();
         $data['password'] = bcrypt($request->password);
         $data['verified'] = User::USUARIO_NO_VERIFICADO;
-        $data['verification_token'] = User::generateVerificationCode();
+        $data['verification_token'] = User::generateVerificationToken();
         $data['is_admin'] = User::USUARIO_REGULAR;
 
         $user = User::create($data);
 
-        return $this->showOne($user, 201);
+        return $this->showOne($user);
     }
 
     /**
@@ -59,7 +59,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        return response()->json(['data' => $user], 200);
+        return $this->showOne($user);
     }
 
     /**
@@ -96,25 +96,20 @@ class UserController extends Controller
 
         if($request->has('is_admin')){
             if(!$user->esVerificado()){
-                return response()->json(
-                    ['error' => 'El usuario debe estar verificado para ser administrador',
-                    'code' => 409], 409
-                );
+                return $this->errorResponse(
+                    'El usuario debe estar verificado para ser administrador', 409);
             }
             $user->is_admin = $request->is_admin;
         }
         
         if(!$user->isDirty()){
-            return response()->json(
-                ['error' => 'El usuario debe tener por lo menos un atributo diferente para ser actualizado',
-                'code' => 422], 422
-            );  
+            return $this->errorResponse(
+                'El usuario debe tener por lo menos un atributo diferente para ser actualizado', 422);  
         }
 
         $user->save();
 
-        return response()->json(['data' => $user], 200);
-
+        return $this->showOne($user);
     }
 
     /**
@@ -129,6 +124,6 @@ class UserController extends Controller
 
         $user->delete();
 
-        return response()->json(['data' => $user], 200);
+        return $this->showOne($user);
     }
 }
