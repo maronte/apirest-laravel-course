@@ -39,6 +39,10 @@ Route::resource('products', 'Product\ProductController', ['only' => ['index','sh
  */
 Route::resource('transactions', 'Transaction\TransactionController', ['only' => ['index','show']]);
 
+Route::resource('transactions.categories', 'Transaction\TransactionCategoryController', ['only' => ['index']]);
+
+Route::resource('transactions.seller', 'Transaction\TransactionSellerController', ['only' => ['index']]);
+
 /**
  * Categories
  */
