@@ -12,7 +12,7 @@ trait ApiResponser
         return response($data, $code);
     }
 
-    protected function errorResponse(string $message, int $code)
+    protected function errorResponse($message, int $code)
     {
         return response()->json([['message' => $message, 'code' => $code] , $code]);
     }
