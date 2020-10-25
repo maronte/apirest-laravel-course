@@ -24,4 +24,9 @@ trait ApiResponser
     protected function showOne(Model $instance, int $code = 200){
         return $this->successResponse(['data' => $instance], $code);
     }
+
+    protected function showMessage($message, int $code = 200)
+    {
+        return response()->json([['message' => $message] , $code]);
+    }
 }
