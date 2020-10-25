@@ -41,7 +41,7 @@ Route::resource('sellers.buyers', 'Seller\SellerBuyerController',
 Route::resource('sellers.categories', 'Seller\SellerCategoryController', 
  ['only' => ['index']]);
 
- Route::resource('sellers.products', 'Seller\SellerProductController', 
+Route::resource('sellers.products', 'Seller\SellerProductController', 
  ['except' => ['show']]);
 
 
