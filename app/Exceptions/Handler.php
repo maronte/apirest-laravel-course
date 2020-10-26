@@ -8,6 +8,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -94,6 +95,10 @@ class Handler extends ExceptionHandler
         elseif ($exception instanceof QueryException && $exception->errorInfo[1] == 1451) {
             return $this->errorResponse('No se puede eliminar de forma permanente el recurso'.
             ' seleccionado porque está relacionado con algún otro', 409);
+        }
+
+        elseif ($exception instanceof TokenMismatchException) {
+            return redirect()->back()->with($request->input());
         }
 
         if( config('app.debug') ){
