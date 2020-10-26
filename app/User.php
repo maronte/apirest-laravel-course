@@ -14,6 +14,13 @@ class User extends Authenticatable
 {
     use Notifiable, SoftDeletes;
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('transform.input' . UserTransformer::class)->only(['store', 'update']);
+    }
+
     const USUARIO_VERIFICADO = '1';
     const USUARIO_NO_VERIFICADO = '0';
 
